@@ -45,3 +45,15 @@ This voltage includes the non-rotating components, so it is actually the inverte
 *Vterm_{phase_name}*
 
 For more information, see section *Voltage Source* in `docs/Theoretical Background.pdf`.
+
+## Inductances
+
+The main inductances located at the diagonal in the inductance matrix are named by its component and harmonics as:
+Ld1: *d*-axis, 1st harmonic
+Lq3: *q*-axis, 3rd harmonic
+
+The cross-coupling inductances located off the main diagonal are named by two components: the axis and harmonic of flux linkage, which is excited, and the axis and harmonic of the current from which it originates.
+Examples:
+
+Ld1q1: *d*-axis, 1st harmonic flux linkage excited by *q*-axis, 1st harmonic current
+Lq3d1: *q*-axis, 3rd harmonic flux linkage excited by *d*-axis, 1st harmonic current

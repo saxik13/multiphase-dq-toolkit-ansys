@@ -21,7 +21,7 @@ The toolkit is primarily designed for workflows involving **Ansys Electronics De
 The *d*-*q* variables are generated automatically when the Electronics Desktop transient model is generated from the RMXprt analytical model or when it is exported from the Ansys Motor-CAD model. This Toolkit uses the same approach with the same outputs, extended for the calculation of: 
 
 - cross-coupling inductances
-- excitation flux linkage from dynamic inductance (necessary for optimal control of saturated machines)
+- excitation flux linkage from incremental inductance (necessary for optimal control of saturated machines)
 - phase voltages of current-fed FEM models
 - terminal voltages without zero-sequence components of current-fed FEM models
 
