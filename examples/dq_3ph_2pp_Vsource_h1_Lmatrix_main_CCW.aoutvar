@@ -1,0 +1,34 @@
+PolePairs 2 Double '' dBTypeDoesntCare
+RotSign -1 Double '' dBTypeDoesntCare
+MechOffsetDeg 0.0 Double '' dBTypeDoesntCare
+Rs 1 Double '' dBTypeDoesntCare
+Lew 1e-06 Double '' dBTypeDoesntCare
+theta_el 'RotSign*(Moving1.Position - MechOffsetDeg/180*pi) * PolePairs - pi' Double deg Uses20Log
+cos0_1 'cos(1*(theta_el - 2*PI*0/3))' Double '' dBTypeDoesntCare
+sin0_1 'sin(-1*(theta_el - 2*PI*0/3))' Double '' dBTypeDoesntCare
+cos1_1 'cos(1*(theta_el - 2*PI*1/3))' Double '' dBTypeDoesntCare
+sin1_1 'sin(-1*(theta_el - 2*PI*1/3))' Double '' dBTypeDoesntCare
+cos2_1 'cos(1*(theta_el - 2*PI*2/3))' Double '' dBTypeDoesntCare
+sin2_1 'sin(-1*(theta_el - 2*PI*2/3))' Double '' dBTypeDoesntCare
+Flux_d1 '(FluxLinkage(PhaseA)*cos0_1 + FluxLinkage(PhaseB)*cos1_1 + FluxLinkage(PhaseC)*cos2_1) * 2/3' Double Wb Uses20Log
+Flux_q1 '(FluxLinkage(PhaseA)*sin0_1 + FluxLinkage(PhaseB)*sin1_1 + FluxLinkage(PhaseC)*sin2_1) * 2/3' Double Wb Uses20Log
+Vind_d1 '(InducedVoltage(PhaseA)*cos0_1 + InducedVoltage(PhaseB)*cos1_1 + InducedVoltage(PhaseC)*cos2_1) * 2/3' Double V Uses20Log
+Vind_q1 '(InducedVoltage(PhaseA)*sin0_1 + InducedVoltage(PhaseB)*sin1_1 + InducedVoltage(PhaseC)*sin2_1) * 2/3' Double V Uses20Log
+V_AB 'InputVoltage(PhaseA) - InputVoltage(PhaseB)' Double '' Uses20Log
+V_BC 'InputVoltage(PhaseB) - InputVoltage(PhaseC)' Double '' Uses20Log
+V_CA 'InputVoltage(PhaseC) - InputVoltage(PhaseA)' Double '' Uses20Log
+I_d1 '(Current(PhaseA)*cos0_1 + Current(PhaseB)*cos1_1 + Current(PhaseC)*cos2_1) * 2/3' Double A Uses20Log
+I_q1 '(Current(PhaseA)*sin0_1 + Current(PhaseB)*sin1_1 + Current(PhaseC)*sin2_1) * 2/3' Double A Uses20Log
+V_d1 '(InputVoltage(PhaseA)*cos0_1 + InputVoltage(PhaseB)*cos1_1 + InputVoltage(PhaseC)*cos2_1) * 2/3' Double V Uses20Log
+V_q1 '(InputVoltage(PhaseA)*sin0_1 + InputVoltage(PhaseB)*sin1_1 + InputVoltage(PhaseC)*sin2_1) * 2/3' Double V Uses20Log
+L0d_1 'L(PhaseA,PhaseA)*cos0_1 + L(PhaseA,PhaseB)*cos1_1 + L(PhaseA,PhaseC)*cos2_1' Double nH Uses20Log
+L0q_1 'L(PhaseA,PhaseA)*sin0_1 + L(PhaseA,PhaseB)*sin1_1 + L(PhaseA,PhaseC)*sin2_1' Double nH Uses20Log
+L1d_1 'L(PhaseB,PhaseA)*cos0_1 + L(PhaseB,PhaseB)*cos1_1 + L(PhaseB,PhaseC)*cos2_1' Double nH Uses20Log
+L1q_1 'L(PhaseB,PhaseA)*sin0_1 + L(PhaseB,PhaseB)*sin1_1 + L(PhaseB,PhaseC)*sin2_1' Double nH Uses20Log
+L2d_1 'L(PhaseC,PhaseA)*cos0_1 + L(PhaseC,PhaseB)*cos1_1 + L(PhaseC,PhaseC)*cos2_1' Double nH Uses20Log
+L2q_1 'L(PhaseC,PhaseA)*sin0_1 + L(PhaseC,PhaseB)*sin1_1 + L(PhaseC,PhaseC)*sin2_1' Double nH Uses20Log
+Ld1 '(L0d_1*cos0_1 + L1d_1*cos1_1 + L2d_1*cos2_1) * 2/3' Double nH Uses20Log
+Lq1 '(L0q_1*sin0_1 + L1q_1*sin1_1 + L2q_1*sin2_1) * 2/3' Double nH Uses20Log
+Flux_e_d1 'Flux_d1 - (Ld1*I_d1)' Double '' Uses20Log
+Flux_e_q1 'Flux_q1 - (Lq1*I_q1)' Double '' Uses20Log
+Torque_dq '3/2*PolePairs*(1*(Flux_d1*I_q1 - Flux_q1*I_d1))' Double '' Uses20Log

@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "Multiphase dq Transformation Toolkit for Ansys Electronics Desktop"
+message: "If you use this software, please cite it using the metadata below."
+type: software
+
+authors:
+  - family-names: Laksar
+    given-names: Jan
+    affiliation: University of West Bohemia
+
+abstract: >
+  Python toolkit for generating harmonic dq transformations for multiphase electric machines in Ansys Electronics Desktop.
+  The toolkit derives transformation matrices, harmonic dq components,
+  and projected inductances and exports expressions suitable for Ansys EDT
+  Output Variables.
+
+keywords:
+  - multiphase machines
+  - dq transformation
+  - harmonic analysis
+  - Ansys Electronics Desktop
+
+license: MIT
+repository-code: https://github.com/saxik13/multiphase-dq-transforms-ansys
+date-released: 2026
+version: 1.0.0

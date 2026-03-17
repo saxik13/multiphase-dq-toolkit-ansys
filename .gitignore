@@ -1,0 +1,9 @@
+__pycache__/
+_documentation_supporting/
+_validations/
+*.pyc
+*.pkl
+*.aedt
+*.aedtresults
+*.log
+.vscode/
