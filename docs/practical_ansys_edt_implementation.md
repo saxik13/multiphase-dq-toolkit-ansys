@@ -10,7 +10,7 @@ Maxwell 2D/3D -> Design Settings -> Matrix Computation:
 
 ![Inductances](images/Enable_Inductance.jpg)
 
-The Apparent and Incremental inductances can be calculated; they are equivalent to the apparent and incremental definition of the inductance:
+The Apparent and Incremental inductances can be calculated; they are equivalent to the static and dynamic definition of the inductance:
 
 $L_{app} = \frac{\Psi}{i}$
 
