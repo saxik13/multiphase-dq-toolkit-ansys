@@ -17,9 +17,9 @@ def write_aoutvar(variables, inputs, output_dir="."):
     RotSign = inputs["rotation_sign"]
     IndMatrix = inputs["inductance_mode"]
     if RotSign == -1:
-        rot = "CCW"
-    else:
         rot = "CW"
+    else:
+        rot = "CCW"
 
     if inputs["excitation_type"] == "voltage":
         source = "V"
