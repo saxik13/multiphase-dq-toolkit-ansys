@@ -29,7 +29,7 @@ For more information, see `docs/Theoretical Background.pdf`.
 
 ## Usage
 
-The Toolkit itselv is locat in `src/` directory.
+The Toolkit itself is located in `src/` directory.
 The Toolkit is prepared as a one-click solution, where everything is operated via a single file `user_input.py`. 
 
 1. Define machine parameters in `user_input.py`
