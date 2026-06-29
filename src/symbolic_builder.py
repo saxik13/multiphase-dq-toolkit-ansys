@@ -44,7 +44,7 @@ class SymbolicBuilder:
 
     def __init__(self, inputs):
         self.inputs = inputs
-        self.variables = []
+        self.variables = {}
 
         self._build_transform_constants()
         self._build_theta()
@@ -84,8 +84,8 @@ class SymbolicBuilder:
 
     def _build_theta(self):
         motion = self.inputs["motion_setup"]
-        expr = f"'RotSign*({motion}.Position - MechOffsetDeg/180*pi) * PolePairs - pi'"
-        self.add("theta_el",expr,"deg","Uses20Log")
+        expr = f"RotSign*({motion}.Position - MechOffsetDeg/180*pi) * PolePairs - pi"
+        self.add("theta_el",expr,False,"deg","Uses20Log")
 
     # ------------------------------------------------------------
     # Trigonometric basis functions
@@ -102,8 +102,8 @@ class SymbolicBuilder:
                 name_sin = f"sin{k}_{mu}"
                 angle = f"{mu}*(theta_el - 2*PI*{k}/{m})"
 
-                self.add(name_cos, f"'cos({angle})'")
-                self.add(name_sin, f"'sin(-{angle})'")
+                self.add(name_cos, f"cos({angle})", False)
+                self.add(name_sin, f"sin(-{angle})", False)
 
     # -------------------------------------------------------------------
     # dq projection of phase currents, flux linkages and induced voltages
@@ -123,11 +123,11 @@ class SymbolicBuilder:
                 terms_d.append(f"{ansys_func}({phase})*{name_cos}")
                 terms_q.append(f"{ansys_func}({phase})*{name_sin}")
 
-            expr_d = "'(" + " + ".join(terms_d) + f") * 2/{m}'"
-            expr_q = "'(" + " + ".join(terms_q) + f") * 2/{m}'"
+            expr_d = "(" + " + ".join(terms_d) + f") * 2/{m}"
+            expr_q = "(" + " + ".join(terms_q) + f") * 2/{m}"
 
-            self.add(f"{name}_d{mu}", expr_d, unit, "Uses20Log")
-            self.add(f"{name}_q{mu}", expr_q, unit, "Uses20Log")
+            self.add(f"{name}_d{mu}", expr_d, False, unit, "Uses20Log")
+            self.add(f"{name}_q{mu}", expr_q, False, unit, "Uses20Log")
 
     # ------------------------------------------------------------
     # Projection of phase inductances
@@ -151,11 +151,11 @@ class SymbolicBuilder:
                     terms_d.append(f"L({phase_i},{phase_k})*{name_cos}")
                     terms_q.append(f"L({phase_i},{phase_k})*{name_sin}")
 
-                expr_d = f"'"+" + ".join(terms_d) + f"'"
-                expr_q = f"'"+" + ".join(terms_q) + f"'"
+                expr_d = f" + ".join(terms_d)
+                expr_q = f" + ".join(terms_q)
 
-                self.add(name_d, expr_d, "nH", "Uses20Log")
-                self.add(name_q, expr_q, "nH", "Uses20Log")
+                self.add(name_d, expr_d, False, "nH", "Uses20Log")
+                self.add(name_q, expr_q, False, "nH", "Uses20Log")
 
     # ------------------------------------------------------------
     # dq inductance matrices
@@ -200,19 +200,19 @@ class SymbolicBuilder:
                     terms_qd.append(f"{coef_q}*{name_cos}")
 
                 if self.inputs["inductance_mode"] == "full":
-                    expr_dd = f"'(" + " + ".join(terms_dd) + f") * 2/{m}'"
-                    expr_dq = f"'(" + " + ".join(terms_dq) + f") * 2/{m}'"
-                    expr_qd = f"'(" + " + ".join(terms_qd) + f") * 2/{m}'"
-                    expr_qq = f"'(" + " + ".join(terms_qq) + f") * 2/{m}'"
-                    self.add(name_dd, expr_dd, "nH", "Uses20Log")                
-                    self.add(name_dq, expr_dq, "nH", "Uses20Log")
-                    self.add(name_qd, expr_qd, "nH", "Uses20Log")
-                    self.add(name_qq, expr_qq, "nH", "Uses20Log")
+                    expr_dd = f"(" + " + ".join(terms_dd) + f") * 2/{m}"
+                    expr_dq = f"(" + " + ".join(terms_dq) + f") * 2/{m}"
+                    expr_qd = f"(" + " + ".join(terms_qd) + f") * 2/{m}"
+                    expr_qq = f"(" + " + ".join(terms_qq) + f") * 2/{m}"
+                    self.add(name_dd, expr_dd, False, "nH", "Uses20Log")                
+                    self.add(name_dq, expr_dq, False, "nH", "Uses20Log")
+                    self.add(name_qd, expr_qd, False, "nH", "Uses20Log")
+                    self.add(name_qq, expr_qq, False, "nH", "Uses20Log")
                 elif mu==nu:
-                    expr_dd = f"'(" + " + ".join(terms_dd) + f") * 2/{m}'"
-                    expr_qq = f"'(" + " + ".join(terms_qq) + f") * 2/{m}'"
-                    self.add(name_dd, expr_dd, "nH", "Uses20Log")                
-                    self.add(name_qq, expr_qq, "nH", "Uses20Log")
+                    expr_dd = f"(" + " + ".join(terms_dd) + f") * 2/{m}"
+                    expr_qq = f"(" + " + ".join(terms_qq) + f") * 2/{m}"
+                    self.add(name_dd, expr_dd, False, "nH", "Uses20Log")                
+                    self.add(name_qq, expr_qq, False, "nH", "Uses20Log")
 
     # ------------------------------------------------------------
     # Excitation flux calculation
@@ -247,8 +247,8 @@ class SymbolicBuilder:
             expr_d = " + ".join(terms_d)
             expr_q = " + ".join(terms_q)
 
-            self.add(f"Flux_e_d{mu}",f"'Flux_d{mu} - ({expr_d})'", "''", "Uses20Log")
-            self.add(f"Flux_e_q{mu}",f"'Flux_q{mu} - ({expr_q})'", "''", "Uses20Log")
+            self.add(f"Flux_e_d{mu}",f"Flux_d{mu} - ({expr_d})", False, "''", "Uses20Log")
+            self.add(f"Flux_e_q{mu}",f"Flux_q{mu} - ({expr_q})", False, "''", "Uses20Log")
 
     # ------------------------------------------------------------
     # Phase and terminal voltages
@@ -276,12 +276,12 @@ class SymbolicBuilder:
 
             var_name_ll = f"V_{code_a}{code_b}"
             if self.inputs["excitation_type"] == "voltage":
-                expr_ll = f"'InputVoltage({phase_a}) - InputVoltage({phase_b})'"
+                expr_ll = f"InputVoltage({phase_a}) - InputVoltage({phase_b})"
             else:
                 var_name_ph = f"V_{code_a}"
                 var_name_term = f"Vterm_{code_a}"
-                expr_ph = f"'InducedVoltage({phase_a}) + Rs*InputCurrent({phase_a}) + Lew*ddt(InputCurrent({phase_a}))'"
-                expr_ll = f"'V_{code_a} - V_{code_b}'"
+                expr_ph = f"InducedVoltage({phase_a}) + Rs*InputCurrent({phase_a}) + Lew*deriv(InputCurrent({phase_a}))"
+                expr_ll = f"V_{code_a} - V_{code_b}"
                 
                 terms = []
                 for i in range(m-1):
@@ -293,7 +293,7 @@ class SymbolicBuilder:
                     terms.append(f"{Dm[k,i]}*{var_ll}")
 
                 expr_term = " + ".join(terms)
-                expr_term = f"'1/{m}*({expr_term})'"
+                expr_term = f"1/{m}*({expr_term})"
 
                 phase_vars.append((var_name_ph, expr_ph))
                 term_vars.append((var_name_term, expr_term))
@@ -301,11 +301,11 @@ class SymbolicBuilder:
             line_vars.append((var_name_ll, expr_ll))
 
         for name, expr in phase_vars:
-            self.add(name, expr, "''", "Uses20Log")
+            self.add(name, expr, False, "''", "Uses20Log")
         for name, expr in line_vars:
-            self.add(name, expr, "''", "Uses20Log")
+            self.add(name, expr, False, "''", "Uses20Log")
         for name, expr in term_vars:
-            self.add(name, expr, "''", "Uses20Log")
+            self.add(name, expr, False, "''", "Uses20Log")
     
     # ------------------------------------------------------------
     # dq projection of phase voltages for current excitation
@@ -326,11 +326,11 @@ class SymbolicBuilder:
                 terms_d.append(f"V_{code}*{name_cos}")
                 terms_q.append(f"V_{code}*{name_sin}")
 
-            expr_d = "'(" + " + ".join(terms_d) + f") * 2/{m}'"
-            expr_q = "'(" + " + ".join(terms_q) + f") * 2/{m}'"
+            expr_d = "(" + " + ".join(terms_d) + f") * 2/{m}"
+            expr_q = "(" + " + ".join(terms_q) + f") * 2/{m}"
 
-            self.add(f"V_d{mu}", expr_d, "''", "Uses20Log")
-            self.add(f"V_q{mu}", expr_q, "''", "Uses20Log")
+            self.add(f"V_d{mu}", expr_d, False, "''", "Uses20Log")
+            self.add(f"V_q{mu}", expr_q, False, "''", "Uses20Log")
 
     # ------------------------------------------------------------
     # dq projection of electromagnetic torque
@@ -346,16 +346,21 @@ class SymbolicBuilder:
             term = f"{mu}*(Flux_d{mu}*I_q{mu} - Flux_q{mu}*I_d{mu})"
             terms.append(term)
 
-        expr = f"'{m}/2*PolePairs*(" + " + ".join(terms) + ")'"
+        expr = f"{m}/2*PolePairs*(" + " + ".join(terms) + ")"
 
-        self.add(f"Torque_dq", expr, "''", "Uses20Log")
+        self.add(f"Torque_dq", expr, False, "''", "Uses20Log")
 
     # ------------------------------------------------------------
     # Variable registration helper
     # ------------------------------------------------------------
     
-    def add(self, name, expression, unit="''", db_flag="dBTypeDoesntCare"):
-        self.variables.append(f"{name} {expression} Double {unit} {db_flag}")
+    def add(self, name, expression, is_constant=True, unit="''", db_flag="dBTypeDoesntCare"):
+        self.variables[name] = {
+            "expression": expression,
+            "unit": unit,
+            "db_flag": db_flag,
+            "is_constant": is_constant
+        }
         
 # ============================================================
 # Phase-to-line voltage transformation matrix

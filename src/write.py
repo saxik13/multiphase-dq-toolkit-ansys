@@ -33,8 +33,36 @@ def write_aoutvar(variables, inputs, output_dir="."):
     filename = f"dq_{m}ph_{p}pp_{source}source_h{harmonics_str}_Lmatrix_{IndMatrix}_{rot}.aoutvar"
     filepath = f"{output_dir}/{filename}"
 
+    # exports the dictionary to a Python file
+    filename="output_vars.py"
+    output_vars = {
+        name: var["expression"]
+        for name, var in variables.items()
+    }
+    with open(filename, "w") as f:
+        f.write("output_vars = {\n")
+        for k, v in output_vars.items():
+            f.write(f"    '{k}': \"{v}\",\n")
+        f.write("}\n")
+
+    # create strings for export from dictionary variables to create .aoutvar file
+    lines = []
+    for name, var in variables.items():
+        expr = var["expression"]
+        
+        if not var["is_constant"]:
+            expr = f"'{expr}'"
+        else:
+            expr = str(expr)
+        
+        unit = var["unit"]
+        db_flag = var["db_flag"]
+
+        line = f"{name} {expr} Double {unit} {db_flag}"
+        lines.append(line)
+
     with open(filepath, "w", encoding="utf-8") as f:
-        for line in variables:
+        for line in lines:
             f.write(line + "\n")
 
     return filepath

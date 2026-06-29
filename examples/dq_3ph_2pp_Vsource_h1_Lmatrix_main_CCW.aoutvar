@@ -1,5 +1,5 @@
 PolePairs 2 Double '' dBTypeDoesntCare
-RotSign -1 Double '' dBTypeDoesntCare
+RotSign 1 Double '' dBTypeDoesntCare
 MechOffsetDeg 0.0 Double '' dBTypeDoesntCare
 Rs 1 Double '' dBTypeDoesntCare
 Lew 1e-06 Double '' dBTypeDoesntCare
